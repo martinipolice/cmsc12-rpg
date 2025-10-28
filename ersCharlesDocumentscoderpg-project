@@ -1,0 +1,30 @@
+[33mcommit 7232a109c31c200263ab13779377dc3f5d697a54[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: Your Name <youremail@example.com>
+Date:   Mon Oct 27 20:39:15 2025 +0800
+
+    Add gitignore to skip save and cache files
+
+[33mcommit 3ceb45a7965ad6fb6fe50a2c5071bf93493667a0[m
+Author: Your Name <youremail@example.com>
+Date:   Mon Oct 27 20:38:47 2025 +0800
+
+    Recommit all project files with correct content
+
+[33mcommit 703acfef929b3fa1da6a13381c4ce74bac863366[m
+Merge: 2bfeda9 50772a1
+Author: Your Name <youremail@example.com>
+Date:   Mon Oct 27 20:34:37 2025 +0800
+
+    Merge branch 'main' of https://github.com/martinipolice/cmsc12-rpg
+
+[33mcommit 2bfeda9e8364f282689f830e11a965261d9f63c4[m
+Author: Your Name <youremail@example.com>
+Date:   Mon Oct 27 20:29:59 2025 +0800
+
+    Initial commit
+
+[33mcommit 50772a1f3a2b8f352b91b8d20b4c17f8d9b40c06[m
+Author: martinipolice <clsantos14@up.edu.ph>
+Date:   Mon Oct 27 20:26:03 2025 +0800
+
+    Initial commit
