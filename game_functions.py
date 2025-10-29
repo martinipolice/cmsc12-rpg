@@ -1,5 +1,5 @@
 # game_functions.py
-
+import random
 
 def create_player():
     """Create a new player using CMSC12 spec format."""
@@ -36,13 +36,80 @@ def show_stats(player):
     print("==================\n")
 
 
+def train(player):
+    print("\nChoose a training type:")
+    print("[1] Stamina Training  (Increase maxHP)")
+    print("[2] Strength Training (Increase ATK)")
+    print("[3] Resilience Training (Increase DEF)")
+    print("[4] Dexterity Training (Increase SPD)")
+    print("[5] Guts Training (Increase all stats)")
+    print("[6] Cancel")
+
+    choice = input("Enter your choice: ")
+
+    if choice == "1":
+        old_hp = player["maxHP"]
+        gain = random.randint(5, 20)
+        player["maxHP"] += gain
+        print(f"\nYou focused on endurance. maxHP increased from {old_hp} to {player['maxHP']} (+{gain})")
+
+    elif choice == "2":
+        old_atk = player["ATK"]
+        gain = random.randint(5, 20)
+        player["ATK"] += gain
+        print(f"\nYou built your strength. ATK increased from {old_atk} to {player['ATK']} (+{gain})")
+
+    elif choice == "3":
+        old_def = player["DEF"]
+        gain = random.randint(5, 20)
+        player["DEF"] += gain
+        print(f"\nYou hardened your defenses. DEF increased from {old_def} to {player['DEF']} (+{gain})")
+
+    elif choice == "4":
+        old_spd = player["SPD"]
+        gain = random.randint(5, 20)
+        player["SPD"] += gain
+        print(f"\nYou refined your agility. SPD increased from {old_spd} to {player['SPD']} (+{gain})")
+
+    elif choice == "5":
+        print("\nYou trained your guts, pushing every limit!")
+        old_hp = player["maxHP"]
+        old_atk = player["ATK"]
+        old_def = player["DEF"]
+        old_spd = player["SPD"]
+
+        hp_gain = random.randint(5, 15)
+        atk_gain = random.randint(5, 15)
+        def_gain = random.randint(5, 15)
+        spd_gain = random.randint(5, 15)
+
+        player["maxHP"] += hp_gain
+        player["ATK"] += atk_gain
+        player["DEF"] += def_gain
+        player["SPD"] += spd_gain
+
+        print(f"maxHP: {old_hp} → {player['maxHP']} (+{hp_gain})")
+        print(f"ATK: {old_atk} → {player['ATK']} (+{atk_gain})")
+        print(f"DEF: {old_def} → {player['DEF']} (+{def_gain})")
+        print(f"SPD: {old_spd} → {player['SPD']} (+{spd_gain})")
+
+    elif choice == "6":
+        print("\nYou skipped training for the day.")
+        return
+    else:
+        print("\nInvalid choice. Training canceled.")
+        return
+
+    player["Day"] += 1
+    print(f"\nDay {player['Day']} has ended. You feel stronger than before.")
 
 
-def train():
-    pass
-
-def rest():
-    pass
+def rest(player):
+    print("\nYou took a full day to rest.")
+    print(f"HP restored from {player['HP']} to {player['maxHP']}.")
+    player["HP"] = player["maxHP"]
+    player["Day"] += 1
+    print(f"Day {player['Day']} has ended. You feel refreshed.\n")
 
 def explore():
     pass

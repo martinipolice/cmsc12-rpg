@@ -1,55 +1,73 @@
-Title: [Your Game Title Here]
-
+Title: Reincarnated as a Devourer
 Course: CMSC 12
 Project: Terminal-based RPG
-Developer: CHARLES GIAN L. SANTOS
-Section: G-5L
+Developer: Charles Satoshi
+Section: [Insert Section Here]
 Date Started: 10/27/2025
-Python Version: Python 3.12.1
+Python Version: [Insert Version, e.g., Python 3.12.1]
 
 Description:
-This project is a terminal-based role-playing game (RPG) developed in Python.
-The player takes the role of a main character who can train, rest, explore, and battle monsters.
-The goal is to grow stronger and defeat the Final Boss on Day 20.
+Reincarnated as a Devourer is a terminal-based RPG where you awaken in another world after death, granted the forbidden power of Devour by a mysterious goddess. This power lets you absorb the strength of your defeated enemies. You have twenty days to train, explore, and grow strong enough to face the Demon King. As you gain power, you uncover a tragic secret that binds the goddess and the Demon King together. Your final battle will decide their fate — and yours.
 
-Features:
+Gameplay Overview:
 
-Start Menu with Start, Load, About, and Exit options
+Train to increase your stats.
 
-Character creation and stat system
+Explore forests to battle monsters and earn gold.
 
-Day-based gameplay
+Use the Devour skill to absorb stat bonuses from victories.
 
-Training and resting functions
+Visit the shop to buy weapons, armor, and potions.
 
-Exploration and battle mechanics
+Rest to recover HP and advance the day.
 
-Shop system for buying weapons and potions
+Save or load your progress anytime.
 
-Save and load game progress
+On Day 20, face the Demon King in the final battle.
 
-Final boss fight
+Story Summary:
+You died in your world and were reborn by a goddess who gave you the power of Devour. She tasks you with defeating the Demon King, a being of immense power. As days pass, you learn the truth — the goddess and the Demon King were once lovers, cursed by fate and time. You are her final creation, meant not to save the world but to set him free. After your victory, you awaken in a hospital, seeing a young couple who resemble them. You whisper, “Another world?”
 
 File Structure:
-main.py – Handles start menu and main flow
-game_functions.py – Contains daily actions and character management
-battle.py – Handles battle mechanics and monster fights
-save_load.py – Manages saving and loading game data
+main.py – Controls the start menu and main game flow.
+game_functions.py – Contains training, resting, exploring, shop, and status logic.
+battle.py – Handles turn-based combat and damage calculations.
+save_load.py – Manages saving and loading progress.
+story_events.py – Contains day-based story dialogues and scenes.
+README.txt – Project documentation.
 
 How to Run:
 
 Open a terminal in the project folder.
 
-Run the program using:
+Run this command:
 python main.py
 
+Follow on-screen instructions to play.
+
+Libraries Used:
+
+random (for stat and event randomization)
+
+os (for clearing the terminal screen, optional)
+
+Built-in Python file I/O functions for saving and loading.
+
+Planned Additions:
+
+Bonus dialogues after battles.
+
+Optional ending based on player choices.
+
+Additional story interactions during rest days.
+
 Notes:
+This project follows the CMSC 12 implementation rules:
 
-This project uses only Python’s built-in libraries, mainly random and file handling.
+No external libraries.
 
-The program runs entirely in the terminal.
+No classes (non-OOP).
 
-No external modules or GUI tools are used.
+Terminal-based interface only.
 
-Planned Improvements:
-[Write optional notes here once you start building, like “Add story dialogue” or “Improve UI layout.”]
+ASCII art and story flavor are optional but encouraged.

@@ -42,15 +42,12 @@ def start_game():
         choice = input("Choose an action: ")
 
         if choice == "1":
-            print("\nYou begin training. (Feature coming soon)\n")
-            player["Day"] += 1
+            game_functions.train(player)
         elif choice == "2":
             print("\nYou explore the forest. (Feature coming soon)\n")
             player["Day"] += 1
         elif choice == "3":
-            print("\nYou rest and recover your strength.\n")
-            player["HP"] = player["maxHP"]
-            player["Day"] += 1
+            game_functions.rest(player)
         elif choice == "4":
             game_functions.show_stats(player)
         elif choice == "5":
