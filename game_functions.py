@@ -111,8 +111,50 @@ def rest(player):
     player["Day"] += 1
     print(f"Day {player['Day']} has ended. You feel refreshed.\n")
 
-def explore():
-    pass
+
+def explore(player):
+    print("\nYou venture into the forest...")
+    tis = player["maxHP"] + player["ATK"] + player["DEF"] + player["SPD"]
+
+    # Determine spawn probabilities based on TIS
+    if tis < 100:
+        monsters = ["Slime", "Mega Slime", "King Slime"]
+        weights = [85, 10, 5]
+    elif tis < 150:
+        monsters = ["Slime", "Mega Slime", "King Slime"]
+        weights = [45, 45, 10]
+    else:
+        monsters = ["Slime", "Mega Slime", "King Slime"]
+        weights = [35, 35, 30]
+
+    # Choose monster based on weighted probability
+    monster = random.choices(monsters, weights=weights, k=1)[0]
+
+    # Define monster stats
+    if monster == "Slime":
+        m_stats = {"HP": 50, "ATK": 8, "DEF": 8, "SPD": 8, "Gold": 10}
+    elif monster == "Mega Slime":
+        m_stats = {"HP": 100, "ATK": 20, "DEF": 20, "SPD": 20, "Gold": 50}
+    else:
+        m_stats = {"HP": 200, "ATK": 50, "DEF": 50, "SPD": 50, "Gold": 500}
+
+    # Display encounter
+    print(f"\nA wild {monster} appeared!")
+    print(f"Stats - HP: {m_stats['HP']}, ATK: {m_stats['ATK']}, DEF: {m_stats['DEF']}, SPD: {m_stats['SPD']}")
+
+    # Placeholder for upcoming battle feature
+    print("\nBattle feature coming soon...")
+
+    # Assume victory for now
+    print(f"\nYou defeated the {monster}!")
+    old_gold = player["Gold"]
+    player["Gold"] += m_stats["Gold"]
+    print(f"Gold increased from {old_gold} to {player['Gold']} (+{m_stats['Gold']})")
+
+    # Consume a day
+    player["Day"] += 1
+    print(f"\nDay {player['Day']} has ended. You return safely from the forest.\n")
+
 
 def shop():
     pass

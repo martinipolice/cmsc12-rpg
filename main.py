@@ -44,8 +44,7 @@ def start_game():
         if choice == "1":
             game_functions.train(player)
         elif choice == "2":
-            print("\nYou explore the forest. (Feature coming soon)\n")
-            player["Day"] += 1
+            game_functions.explore(player)
         elif choice == "3":
             game_functions.rest(player)
         elif choice == "4":
@@ -55,8 +54,6 @@ def start_game():
             break
         else:
             print("\nInvalid input. Try again.\n")
-        
-        print(f"Day {player['Day']} has ended. You feel time slipping away...")
     
 
         if player["Day"] > 20:
