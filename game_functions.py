@@ -1,5 +1,6 @@
 # game_functions.py
 import random
+import battle
 
 def create_player():
     """Create a new player using CMSC12 spec format."""
@@ -138,21 +139,20 @@ def explore(player):
     else:
         m_stats = {"HP": 200, "ATK": 50, "DEF": 50, "SPD": 50, "Gold": 500}
 
-    # Display encounter
-    print(f"\nA wild {monster} appeared!")
-    print(f"Stats - HP: {m_stats['HP']}, ATK: {m_stats['ATK']}, DEF: {m_stats['DEF']}, SPD: {m_stats['SPD']}")
 
-    # Placeholder for upcoming battle feature
-    print("\nBattle feature coming soon...")
+    # Start battle
+    result = battle.start_battle(player, monster, m_stats)
 
-    # Assume victory for now
-    print(f"\nYou defeated the {monster}!")
-    old_gold = player["Gold"]
-    player["Gold"] += m_stats["Gold"]
-    print(f"Gold increased from {old_gold} to {player['Gold']} (+{m_stats['Gold']})")
+    if result == "win":
+        print(f"\nYou return victorious from the forest.")
+    elif result == "lose":
+        print("\nYou wake up later... barely alive. The goddess’s voice echoes faintly.")
+        player["HP"] = player["maxHP"] // 2
+    elif result == "run":
+        print(f"\nYou escaped and returned safely to your camp.")
 
-    # Consume a day
     player["Day"] += 1
+
     print(f"\nDay {player['Day']} has ended. You return safely from the forest.\n")
 
 
