@@ -2,8 +2,6 @@
 import random
 
 def start_battle(player, monster_name, m_stats):
-    print(f"\nA wild {monster_name} appeared!")
-    print(f"Stats - HP: {m_stats['HP']}, ATK: {m_stats['ATK']}, DEF: {m_stats['DEF']}, SPD: {m_stats['SPD']}")
     print(f"\nA battle begins against {monster_name}!")
     print("Prepare yourself!\n")
 
@@ -24,8 +22,9 @@ def start_battle(player, monster_name, m_stats):
             result = player_turn(player, monster_name, m_stats, player_hp, monster_hp)
 
             # store old defense if defending
-            if "temp_def" in result and player["DEF"] > result["temp_def"]:
+            if "temp_def" in result:
                 player["temp_def"] = result["temp_def"]
+
 
             # check win or flee
             if result["monster_hp"] <= 0:
@@ -60,8 +59,9 @@ def start_battle(player, monster_name, m_stats):
 
             result = player_turn(player, monster_name, m_stats, player_hp, monster_hp)
 
-            if "temp_def" in result and player["DEF"] > result["temp_def"]:
+            if "temp_def" in result:
                 player["temp_def"] = result["temp_def"]
+
 
             if result["monster_hp"] <= 0:
                 print(f"\nYou defeated the {monster_name}!")
@@ -104,8 +104,38 @@ def player_turn(player, monster_name, m_stats, player_hp, monster_hp):
         print(f"\nYou brace yourself for the attack! DEF temporarily increased to {player['DEF']}.")
 
     elif choice == "3":
-        print("\nItem system coming soon.")
-        # placeholder for potion use
+        potions = player["Potion"]
+        print("\nAvailable Potions:")
+        for p, count in potions.items():
+            print(f"{p}: {count}")
+        print("[4] Cancel")
+
+        select = input("Choose a potion: ").capitalize()
+
+        if select == "Small" and potions["Small"] > 0:
+            heal = 30
+            player_hp = min(player["maxHP"], player_hp + heal)
+            potions["Small"] -= 1
+            print(f"You used a Small Potion and restored {heal} HP!")
+            print(f"Current HP: {player_hp}/{player['maxHP']}")
+
+        elif select == "Big" and potions["Big"] > 0:
+            heal = 100
+            player_hp = min(player["maxHP"], player_hp + heal)
+            potions["Big"] -= 1
+            print(f"You used a Big Potion and restored {heal} HP!")
+            print(f"Current HP: {player_hp}/{player['maxHP']}")
+
+        elif select == "Panacea" and potions["Panacea"] > 0:
+            player_hp = player["maxHP"]
+            potions["Panacea"] -= 1
+            print("You used a Panacea and fully restored your HP!")
+            print(f"Current HP: {player_hp}/{player['maxHP']}")
+
+        elif select == "4":
+            print("You changed your mind.")
+        else:
+            print("Invalid choice or not enough potions.")
 
     elif choice == "4":
         chance = random.randint(1, 100)
@@ -124,6 +154,7 @@ def enemy_turn(player_hp, player, monster_name, m_stats):
     """Handles enemy's attack phase."""
     damage = max(0, m_stats["ATK"] - player["DEF"])
     player_hp -= damage
+    player_hp = max(0, player_hp)
     print(f"The {monster_name} attacked and dealt {damage} damage!")
 
     # Revert defense after defend

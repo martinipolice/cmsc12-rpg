@@ -34,23 +34,29 @@ def start_game():
         print(f"\n=== DAY {player['Day']} ===")
         print(f"What will you do today, {player['Name']}?")
         print("[1] Train")
-        print("[2] Explore")
-        print("[3] Rest")
-        print("[4] View Status")
-        print("[5] End Game")
+        print("[2] Rest")
+        print("[3] Explore")
+        print("[4] Shop")
+        print("[5] Save Game")
+        print("[6] View Status")
+        print("[7] End Game")
 
         choice = input("Choose an action: ")
 
         if choice == "1":
             game_functions.train(player)
         elif choice == "2":
-            game_functions.explore(player)
-        elif choice == "3":
             game_functions.rest(player)
+        elif choice == "3":
+            game_functions.explore(player)
         elif choice == "4":
-            game_functions.show_stats(player)
+            game_functions.shop(player)
         elif choice == "5":
-            print("\nYou decided to end your journey early.\n")
+            print("\nSave feature coming soon.\n")
+        elif choice == "6":
+            game_functions.show_stats(player)
+        elif choice == "7":
+            print("\nThank you for playing. Goodbye!\n")
             break
         else:
             print("\nInvalid input. Try again.\n")

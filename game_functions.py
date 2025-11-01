@@ -156,8 +156,61 @@ def explore(player):
     print(f"\nDay {player['Day']} has ended. You return safely from the forest.\n")
 
 
-def shop():
-    pass
+def shop(player):
+    print("\n=== SHOP ===")
+    print("Welcome to the merchant's stall!")
+    print("[1] Iron Sword [+10 ATK] - 30G")
+    print("[2] Steel Sword [+25 ATK] - 60G")
+    print("[3] Excalibur [+50 ATK] - 100G")
+    print("[4] Iron Shield [+10 DEF] - 30G")
+    print("[5] Steel Shield [+25 DEF] - 60G")
+    print("[6] Omega Shield [+50 DEF] - 100G")
+    print("[7] Leather Sandals [+10 SPD] - 30G")
+    print("[8] Leather Shoes [+25 SPD] - 60G")
+    print("[9] Mercurius Shoes [+50 SPD] - 100G")
+    print("[10] Small Potion [+30 HP] - 15G")
+    print("[11] Big Potion [+100 HP] - 30G")
+    print("[12] Panacea [Full Heal] - 50G")
+    print("[13] Exit Shop")
+
+    choice = input("Choose an item to buy: ")
+
+    if choice == "13":
+        print("You left the shop.")
+        return
+
+    items = {
+        "1": ("ATK", 10, 30),
+        "2": ("ATK", 25, 60),
+        "3": ("ATK", 50, 100),
+        "4": ("DEF", 10, 30),
+        "5": ("DEF", 25, 60),
+        "6": ("DEF", 50, 100),
+        "7": ("SPD", 10, 30),
+        "8": ("SPD", 25, 60),
+        "9": ("SPD", 50, 100),
+        "10": ("Potion", "Small", 15),
+        "11": ("Potion", "Big", 30),
+        "12": ("Potion", "Panacea", 50)
+    }
+
+    if choice in items:
+        stat, value, cost = items[choice]
+        if player["Gold"] < cost:
+            print("Not enough gold.")
+            return
+
+        player["Gold"] -= cost
+
+        if stat == "Potion":
+            player["Potion"][value] += 1
+            print(f"You bought a {value} Potion. You now have {player['Potion'][value]} of it.")
+        else:
+            old = player[stat]
+            player[stat] += value
+            print(f"{stat} increased from {old} to {player[stat]} (+{value}).")
+    else:
+        print("Invalid choice.")
 
 def save():
     pass
