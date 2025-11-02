@@ -17,7 +17,9 @@ def main():
         if choice == "1":
             start_game()
         elif choice == "2":
-            print("\nLoad feature coming soon.\n")
+            player = save_load.load_game()
+            if player:
+                start_game(player)
         elif choice == "3":
             show_about()
         elif choice == "4":
@@ -28,7 +30,8 @@ def main():
 
 
 def start_game():
-    player = game_functions.create_player()
+    if not player:
+        player = game_functions.create_player()
 
     while True:
         print(f"\n=== DAY {player['Day']} ===")
@@ -52,7 +55,7 @@ def start_game():
         elif choice == "4":
             game_functions.shop(player)
         elif choice == "5":
-            print("\nSave feature coming soon.\n")
+            save_load.save_game(player)
         elif choice == "6":
             game_functions.show_stats(player)
         elif choice == "7":

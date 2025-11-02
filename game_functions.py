@@ -3,9 +3,7 @@ import random
 import battle
 
 def create_player():
-    """Create a new player using CMSC12 spec format."""
     name = input("Enter your name: ")
-
     player = {
         "Name": name,
         "HP": 20.0,
@@ -17,7 +15,7 @@ def create_player():
         "Potion": {"Small": 0, "Big": 0, "Panacea": 0},
         "Day": 1
     }
-
+    
     print(f"\nWelcome, {name}. You awaken in a strange new world.")
     print("The goddess whispers: 'Survive, grow, and face your fate.'\n")
     return player
