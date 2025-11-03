@@ -29,7 +29,7 @@ def main():
             print("\nInvalid input. Try again.\n")
 
 
-def start_game():
+def start_game(player=None):
     if not player:
         player = game_functions.create_player()
 
@@ -67,9 +67,10 @@ def start_game():
 
         if player["Day"] > 20:
             print("\nYour 20 days are over. The final battle awaits...\n")
+            game_functions.final_battle(player)
             break
 
-
+            
 
 def show_about():
     print("\nReincarnated as a Devourer is a terminal-based RPG.")

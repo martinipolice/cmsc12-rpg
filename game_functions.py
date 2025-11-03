@@ -210,6 +210,33 @@ def shop(player):
     else:
         print("Invalid choice.")
 
+def final_battle(player):
+    print("\nThe sky darkens... The Demon King descends before you!")
+    total_stats = player["maxHP"] + player["ATK"] + player["DEF"] + player["SPD"]
+
+    # Demon King stats scale dynamically
+    m_stats = {
+        "HP": int(total_stats * 1.5),
+        "ATK": int(total_stats * 0.3),
+        "DEF": int(total_stats * 0.25),
+        "SPD": int(total_stats * 0.2),
+        "Gold": 0
+    }
+
+    result = battle.start_battle(player, "Demon King", m_stats)
+
+    if result == "win":
+        print("\nYou have defeated the Demon King. Peace returns to the world.")
+        print("The goddess smiles upon you. You are victorious.")
+    elif result == "lose":
+        print("\nYou fall before the Demon King’s power...")
+        print("The world plunges into darkness once more.")
+    else:
+        print("\nYou fled, but the world perishes without its hero.")
+    
+    print("\n=== GAME OVER ===")
+
+
 def save():
     pass
 
