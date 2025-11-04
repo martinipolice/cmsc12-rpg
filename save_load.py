@@ -14,6 +14,14 @@ def save_game(player):
     except Exception as e:
         print(f"Error saving game: {e}")
 
+def auto_save(player):
+    """Automatically save progress silently."""
+    try:
+        with open(SAVE_FILE, "w") as f:
+            json.dump(player, f)
+        print("(Auto-saved progress.)")
+    except:
+        pass  # silent auto-save to avoid interruptions
 
 def load_game():
     """Load player data from a save file."""

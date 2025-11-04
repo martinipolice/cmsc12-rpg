@@ -19,7 +19,11 @@ def main():
         elif choice == "2":
             player = save_load.load_game()
             if player:
-                start_game(player)
+                cont = input("Continue your journey? (Y/N): ").strip().lower()
+                if cont == "y":
+                    start_game(player)
+                else:
+                    print("Returning to menu...\n")
         elif choice == "3":
             show_about()
         elif choice == "4":
@@ -48,12 +52,16 @@ def start_game(player=None):
 
         if choice == "1":
             game_functions.train(player)
+            save_load.auto_save(player)
         elif choice == "2":
             game_functions.rest(player)
+            save_load.auto_save(player)                 
         elif choice == "3":
             game_functions.explore(player)
+            save_load.auto_save(player)
         elif choice == "4":
             game_functions.shop(player)
+            save_load.auto_save(player)
         elif choice == "5":
             save_load.save_game(player)
         elif choice == "6":
@@ -68,6 +76,8 @@ def start_game(player=None):
         if player["Day"] > 20:
             print("\nYour 20 days are over. The final battle awaits...\n")
             game_functions.final_battle(player)
+            print("\nThank you for playing 'Reincarnated as a Devourer'.")
+            print("Developed by Charles Gian L. Santos.\n")
             break
 
             

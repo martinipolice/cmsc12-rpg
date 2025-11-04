@@ -1,6 +1,7 @@
 # game_functions.py
 import random
 import battle
+import save_load
 
 def create_player():
     name = input("Enter your name: ")
@@ -237,8 +238,3 @@ def final_battle(player):
     print("\n=== GAME OVER ===")
 
 
-def save():
-    pass
-
-def status():
-    pass
