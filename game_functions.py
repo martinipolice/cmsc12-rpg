@@ -215,26 +215,95 @@ def final_battle(player):
     print("\nThe sky darkens... The Demon King descends before you!")
     total_stats = player["maxHP"] + player["ATK"] + player["DEF"] + player["SPD"]
 
-    # Demon King stats scale dynamically
+     # Demon King stats (base values)
     m_stats = {
-        "HP": int(total_stats * 1.5),
-        "ATK": int(total_stats * 0.3),
-        "DEF": int(total_stats * 0.25),
-        "SPD": int(total_stats * 0.2),
+        "HP": 200,
+        "ATK": 75,
+        "DEF": 75,
+        "SPD": 75,
         "Gold": 0
     }
 
-    result = battle.start_battle(player, "Demon King", m_stats)
+    print("\nA blinding light fills the sky. The final battle begins!\n")
 
-    if result == "win":
-        print("\nYou have defeated the Demon King. Peace returns to the world.")
-        print("The goddess smiles upon you. You are victorious.")
-    elif result == "lose":
-        print("\nYou fall before the Demon King’s power...")
-        print("The world plunges into darkness once more.")
-    else:
-        print("\nYou fled, but the world perishes without its hero.")
-    
+    monster_hp = m_stats["HP"]
+    player_hp = player["HP"]
+    turn_count = 1
+    charge_next = False
+
+    player_first = player["SPD"] >= m_stats["SPD"]
+
+    while True:
+        print(f"\n--- Turn {turn_count} ---")
+        print(f"Your HP: {player_hp}/{player['maxHP']}")
+        print(f"Demon King HP: {monster_hp}/{m_stats['HP']}")
+
+        if turn_count % 5 == 0:
+            print("The Demon King begins to charge up immense power...")
+            charge_next = True
+        else:
+            if player_first:
+                result = battle.player_turn(player, "Demon King", m_stats, player_hp, monster_hp)
+                monster_hp = result["monster_hp"]
+                player_hp = result["player_hp"]
+
+                if result["fled"]:
+                    print("\nYou tried to flee, but the goddess blocks your path.")
+                    print("You cannot run from fate.")
+                    continue
+
+                if monster_hp <= 0:
+                    print("\nYou have defeated the Demon King!")
+                    print("Peace returns to the world. You are victorious!")
+                    break
+
+                atk_boost = 2 if charge_next else 1
+                charge_next = False
+
+                damage = max(0, (m_stats["ATK"] * atk_boost) - player["DEF"])
+                player_hp -= damage
+                player_hp = max(0, player_hp)
+                if atk_boost == 2:
+                    print("The Demon King unleashes his charged strike!")
+                print(f"The Demon King dealt {damage} damage!")
+
+                if player_hp <= 0:
+                    print("\nYou have fallen in battle...")
+                    print("The world plunges into darkness once more.")
+                    break
+
+            else:
+                atk_boost = 2 if charge_next else 1
+                charge_next = False
+
+                damage = max(0, (m_stats["ATK"] * atk_boost) - player["DEF"])
+                player_hp -= damage
+                player_hp = max(0, player_hp)
+                if atk_boost == 2:
+                    print("The Demon King unleashes his charged strike!")
+                print(f"The Demon King dealt {damage} damage!")
+
+                if player_hp <= 0:
+                    print("\nYou have fallen in battle...")
+                    print("The world plunges into darkness once more.")
+                    break
+
+                result = battle.player_turn(player, "Demon King", m_stats, player_hp, monster_hp)
+                monster_hp = result["monster_hp"]
+                player_hp = result["player_hp"]
+
+                if result["fled"]:
+                    print("\nYou tried to flee, but the goddess blocks your path.")
+                    print("You cannot run from fate.")
+                    continue
+
+                if monster_hp <= 0:
+                    print("\nYou have defeated the Demon King!")
+                    print("Peace returns to the world. You are victorious!")
+                    break
+
+        turn_count += 1
+
     print("\n=== GAME OVER ===")
 
 
