@@ -10,7 +10,8 @@ def main():
         print("[1] Start Game")
         print("[2] Load Game")
         print("[3] About")
-        print("[4] Exit")
+        print("[4] Help")
+        print("[5] Exit")
 
         choice = input("Choose an option: ")
 
@@ -27,6 +28,8 @@ def main():
         elif choice == "3":
             show_about()
         elif choice == "4":
+            show_help()
+        elif choice == "5":
             print("\nGoodbye.\n")
             break
         else:
@@ -52,23 +55,35 @@ def start_game(player=None):
 
         if choice == "1":
             game_functions.train(player)
-            save_load.auto_save(player)
+            ask = input("Would you like to save your progress? (Y/N): ").strip().lower()
+            if ask == "y":
+                save_load.save_game(player)
         elif choice == "2":
             game_functions.rest(player)
-            save_load.auto_save(player)                 
+            ask = input("Would you like to save your progress? (Y/N): ").strip().lower()
+            if ask == "y":
+                save_load.save_game(player)                
         elif choice == "3":
             game_functions.explore(player)
-            save_load.auto_save(player)
+            ask = input("Would you like to save your progress? (Y/N): ").strip().lower()
+            if ask == "y":
+                save_load.save_game(player)
         elif choice == "4":
             game_functions.shop(player)
-            save_load.auto_save(player)
+            ask = input("Would you like to save your progress? (Y/N): ").strip().lower()
+            if ask == "y":
+                save_load.save_game(player)
         elif choice == "5":
             save_load.save_game(player)
         elif choice == "6":
             game_functions.show_stats(player)
         elif choice == "7":
-            print("\nThank you for playing. Goodbye!\n")
-            break
+            confirm = input("Are you sure you want to quit? (Y/N): ").strip().lower()
+            if confirm == "y":
+                print("\nThank you for playing. Goodbye!\n")
+                break
+            else:
+                print("\nContinuing your adventure...")
         else:
             print("\nInvalid input. Try again.\n")
     
@@ -88,6 +103,15 @@ def show_about():
     print("Train, explore, and prepare to face the Demon King in 20 days.\n")
     input("(Press Enter to return to menu...)")
 
+def show_help():
+    print("\n=== HELP / TUTORIAL ===")
+    print("1. Train to increase your stats and grow stronger.")
+    print("2. Rest to fully restore your HP.")
+    print("3. Explore to fight monsters and earn Gold.")
+    print("4. Visit the Shop to buy potions and gear.")
+    print("5. Always save your progress using the Save option.")
+    print("6. Survive for 20 days, then face the Demon King.")
+    input("\n(Press Enter to return to the menu...)")
 
 if __name__ == "__main__":
     main()

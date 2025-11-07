@@ -11,17 +11,9 @@ def save_game(player):
         with open(SAVE_FILE, "w") as f:
             json.dump(player, f, indent=4)
         print("\nProgress saved successfully.")
+        verify_save()
     except Exception as e:
         print(f"Error saving game: {e}")
-
-def auto_save(player):
-    """Automatically save progress silently."""
-    try:
-        with open(SAVE_FILE, "w") as f:
-            json.dump(player, f)
-        print("(Auto-saved progress.)")
-    except:
-        pass  # silent auto-save to avoid interruptions
 
 def load_game():
     """Load player data from a save file."""
@@ -37,3 +29,14 @@ def load_game():
     except Exception as e:
         print(f"Error loading game: {e}")
         return None
+    
+def verify_save():
+    """Check if the saved game can be loaded properly."""
+    try:
+        with open("game.save", "r") as f:
+            data = json.load(f)
+        print("Verification complete: Save file is readable.\n")
+        return True
+    except Exception:
+        print("Warning: Save file may be corrupted.\n")
+        return False
