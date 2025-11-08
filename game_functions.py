@@ -2,6 +2,7 @@
 import random
 import battle
 import save_load
+import time
 
 def create_player():
     name = input("Enter your name: ")
@@ -102,6 +103,7 @@ def train(player):
 
     player["Day"] += 1
     print(f"\nDay {player['Day']} has ended. You feel stronger than before.")
+    check_lore_event(player)
 
 
 def rest(player):
@@ -110,6 +112,8 @@ def rest(player):
     player["HP"] = player["maxHP"]
     player["Day"] += 1
     print(f"Day {player['Day']} has ended. You feel refreshed.\n")
+
+    check_lore_event(player)
 
 
 def explore(player):
@@ -153,6 +157,8 @@ def explore(player):
     player["Day"] += 1
 
     print(f"\nDay {player['Day']} has ended. You return safely from the forest.\n")
+
+    check_lore_event(player)
 
 
 def shop(player):
@@ -299,7 +305,13 @@ def final_battle(player):
 
                 if monster_hp <= 0:
                     print("\nYou have defeated the Demon King!")
-                    print("Peace returns to the world. You are victorious!")
+                    print("The Demon King falls to his knees, smiling faintly.")
+                    print("Demon King: 'Tell her... I waited.'")
+                    print("Light floods the temple.")
+                    print("Goddess: 'Thank you. His soul can rest... and so can mine.'")
+                    print("They fade together. Silence follows.")
+                    player["Day"] = 21
+                    check_lore_event(player)
                     break
 
         turn_count += 1
@@ -307,3 +319,55 @@ def final_battle(player):
     print("\n=== GAME OVER ===")
 
 
+def check_lore_event(player):
+    day = player["Day"]
+
+    def say(text, delay=1):
+        print(text)
+        time.sleep(delay)
+
+    if day == 1:
+        say("\nYou wake up in a forest. The air feels heavy and still.")
+        say("A faint voice echoes: 'This world is your new beginning.'")
+
+    elif day == 5:
+        say("\nYou dream of the goddess watching from afar.")
+        say("Goddess: 'Do not fear this world. It was made for you.'")
+
+    elif day == 10:
+        say("\nA vision fills your mind.")
+        say("You see the goddess beside a shadow under a red sky.")
+        say("Her voice trembles: 'Forgive me.'")
+
+    elif day == 11:
+        say("\nThe dreams feel too real to ignore.")
+        say("You begin to wonder who the man beside her was.")
+
+    elif day == 15:
+        say("\nYou find ancient ruins deep within the forest.")
+        say("Carvings show a goddess and a dark figure side by side.")
+        say("Ghostly Voice: 'They once loved each other. Love turned to ruin.'")
+        say("Goddess: 'Do not question fate. Finish what was started.'")
+
+    elif day == 16:
+        say("\nThe goddess no longer answers.")
+        say("The monsters whisper your name as you fight.")
+
+    elif day == 19:
+        say("\nYou dream once more. The goddess appears, fading fast.")
+        say("Goddess: 'He waits for me still... End it, please.'")
+
+    elif day == 20:
+        say("\nYou reach a ruined temple. Darkness thickens around you.")
+        say("A tall figure steps forward.")
+        say("Demon King: 'You carry her scent... and her sorrow.'")
+        say("You: 'She sent me to end you.'")
+        say("Demon King: 'Then she still cannot let go.'")
+
+    elif day == 21:
+        say("\nThe world dissolves into white.", 1.5)
+        say("*Beep... Beep...*", 1)
+        say("You open your eyes in a hospital room.", 1)
+        say("Through the window, a young couple walks by.", 1)
+        say("Their faces resemble the goddess and the Demon King.", 1)
+        say("You whisper: 'Another world?'", 1)
