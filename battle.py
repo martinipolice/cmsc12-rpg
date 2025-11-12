@@ -1,9 +1,10 @@
 # battle.py
 import random
+from text_utils import slow_print
 
 def start_battle(player, monster_name, m_stats):
-    print(f"\nA battle begins against {monster_name}!")
-    print("Prepare yourself!\n")
+    slow_print(f"\nA battle begins against {monster_name}!")
+    slow_print("Prepare yourself!\n")
 
     monster_hp = m_stats["HP"]
     player_hp = player["HP"]
@@ -21,58 +22,51 @@ def start_battle(player, monster_name, m_stats):
         if player_first:
             result = player_turn(player, monster_name, m_stats, player_hp, monster_hp)
 
-            # store old defense if defending
-            if "temp_def" in result:
-                player["temp_def"] = result["temp_def"]
-
-
             # check win or flee
             if result["monster_hp"] <= 0:
-                print(f"\nYou defeated the {monster_name}!")
+                slow_print(f"\nYou defeated the {monster_name}!")
                 gold = m_stats["Gold"]
+                old_gold = player["Gold"]
                 player["Gold"] += gold
-                print(f"You earned {gold} Gold.")
-                player["HP"] = player_hp
+                slow_print(f"You earned {gold} Gold. ({old_gold} -> {player['Gold']})")
+                player["HP"] = result["player_hp"]
                 return "win"
             if result["fled"]:
-                print(f"\nYou successfully fled from the {monster_name}.")
-                player["HP"] = player_hp
+                slow_print(f"\nYou successfully fled from the {monster_name}.")
+                player["HP"] = result["player_hp"]
                 return "run"
 
             monster_hp = result["monster_hp"]
             player_hp = result["player_hp"]
 
             # enemy's turn
-            player_hp = enemy_turn(player_hp, player, monster_name, m_stats)
+            player_hp = enemy_turn(player_hp, player, monster_name, m_stats, result.get("defending", False), result.get("original_def", None))
             if player_hp <= 0:
-                print("\nYou have fallen in battle...")
+                slow_print("\nYou have fallen in battle...")
                 player["HP"] = 0
                 return "lose"
 
         # Enemy moves first
         else:
-            player_hp = enemy_turn(player_hp, player, monster_name, m_stats)
+            player_hp = enemy_turn(player_hp, player, monster_name, m_stats, False, None)
             if player_hp <= 0:
-                print("\nYou have fallen in battle...")
+                slow_print("\nYou have fallen in battle...")
                 player["HP"] = 0
                 return "lose"
 
             result = player_turn(player, monster_name, m_stats, player_hp, monster_hp)
 
-            if "temp_def" in result:
-                player["temp_def"] = result["temp_def"]
-
-
             if result["monster_hp"] <= 0:
-                print(f"\nYou defeated the {monster_name}!")
+                slow_print(f"\nYou defeated the {monster_name}!")
                 gold = m_stats["Gold"]
+                old_gold = player["Gold"]  # FIXED: Consistent old->new gold
                 player["Gold"] += gold
-                print(f"You earned {gold} Gold.")
-                player["HP"] = player_hp
+                slow_print(f"You earned {gold} Gold. ({old_gold} -> {player['Gold']})")
+                player["HP"] = result["player_hp"]
                 return "win"
             if result["fled"]:
-                print(f"\nYou successfully fled from the {monster_name}.")
-                player["HP"] = player_hp
+                slow_print(f"\nYou successfully fled from the {monster_name}.")
+                player["HP"] = result["player_hp"]
                 return "run"
 
             monster_hp = result["monster_hp"]
@@ -89,77 +83,87 @@ def player_turn(player, monster_name, m_stats, player_hp, monster_hp):
     print("[3] Item")
     print("[4] Flee")
 
-    choice = input("Enter your choice: ")
+    choice = input("Enter your choice: ").strip()
 
     fled = False
-    temp_def = player["DEF"]
+    defending = False
+    original_def = player["DEF"]
 
     if choice == "1":
         damage = max(0, player["ATK"] - m_stats["DEF"])
         monster_hp -= damage
-        print(f"\nYou attacked the {monster_name} for {damage} damage!")
+        slow_print(f"\nYou attacked the {monster_name} for {damage} damage!")
+        print(f"(Your ATK {player['ATK']} vs Enemy DEF {m_stats['DEF']})")
 
     elif choice == "2":
+        defending = True
         player["DEF"] += player["ATK"]
-        print(f"\nYou brace yourself for the attack! DEF temporarily increased to {player['DEF']}.")
+        slow_print(f"\nYou brace yourself for the attack!")
+        print(f"DEF temporarily increased: {original_def} -> {player['DEF']}")
 
     elif choice == "3":
         potions = player["Potion"]
         print("\nAvailable Potions:")
         for p, count in potions.items():
-            print(f"{p}: {count}")
-        print("[4] Cancel")
+            print(f"  {p}: {count}")
+        print("[Cancel] - Type anything else to cancel")
 
-        select = input("Choose a potion: ").capitalize()
+        select = input("Choose a potion (Small/Big/Panacea): ").strip().capitalize()
 
         if select == "Small" and potions["Small"] > 0:
             heal = 30
             player_hp = min(player["maxHP"], player_hp + heal)
             potions["Small"] -= 1
-            print(f"You used a Small Potion and restored {heal} HP!")
+            slow_print(f"You used a Small Potion and restored {heal} HP!")
             print(f"Current HP: {player_hp}/{player['maxHP']}")
 
         elif select == "Big" and potions["Big"] > 0:
             heal = 100
             player_hp = min(player["maxHP"], player_hp + heal)
             potions["Big"] -= 1
-            print(f"You used a Big Potion and restored {heal} HP!")
+            slow_print(f"You used a Big Potion and restored {heal} HP!")
             print(f"Current HP: {player_hp}/{player['maxHP']}")
 
         elif select == "Panacea" and potions["Panacea"] > 0:
             player_hp = player["maxHP"]
             potions["Panacea"] -= 1
-            print("You used a Panacea and fully restored your HP!")
+            slow_print("You used a Panacea and fully restored your HP!")
             print(f"Current HP: {player_hp}/{player['maxHP']}")
 
-        elif select == "4":
-            print("You changed your mind.")
         else:
-            print("Invalid choice or not enough potions.")
+            print("Invalid choice or not enough potions. You wasted your turn!")
 
     elif choice == "4":
         chance = random.randint(1, 100)
         if chance <= 50:
             fled = True
         else:
-            print(f"\nYou tried to flee but failed! The {monster_name} blocks your path.")
-            print("You lose your turn as the enemy prepares to strike.")
+            slow_print(f"\nYou tried to flee but failed! The {monster_name} blocks your path.")
+            slow_print("You lose your turn as the enemy prepares to strike.")
     else:
-        print("\nInvalid input.")
+        print("\nInvalid input. You hesitate and waste your turn!")
 
-    return {"monster_hp": monster_hp, "player_hp": player_hp, "fled": fled, "temp_def": temp_def}
+    # FIXED: Proper return statement with all closing braces
+    return {
+        "monster_hp": monster_hp, 
+        "player_hp": player_hp, 
+        "fled": fled,
+        "defending": defending,
+        "original_def": original_def
+    }
 
 
-def enemy_turn(player_hp, player, monster_name, m_stats):
+def enemy_turn(player_hp, player, monster_name, m_stats, defending=False, original_def=None):
     """Handles enemy's attack phase."""
     damage = max(0, m_stats["ATK"] - player["DEF"])
     player_hp -= damage
     player_hp = max(0, player_hp)
-    print(f"The {monster_name} attacked and dealt {damage} damage!")
+    slow_print(f"The {monster_name} attacked and dealt {damage} damage!")
+    print(f"(Enemy ATK {m_stats['ATK']} vs Your DEF {player['DEF']})")
 
     # Revert defense after defend
-    if "temp_def" in player:
-        player["DEF"] = player["temp_def"]
-        del player["temp_def"]
+    if defending and original_def is not None:
+        player["DEF"] = original_def
+        print(f"Your defense returns to normal: {player['DEF']}")
 
     return player_hp

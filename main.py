@@ -6,21 +6,27 @@ import battle
 
 def main():
     while True:
-        print("=== REINCARNATED AS A DEVOURER ===")
+        print("\n" + "="*50)
+        print("           REINCARNATED AS A DEVOURER")
+        print("="*50)
         print("[1] Start Game")
         print("[2] Load Game")
         print("[3] About")
         print("[4] Help")
         print("[5] Exit")
+        print("="*50)
 
-        choice = input("Choose an option: ")
+        choice = input("\nChoose an option: ").strip()
 
         if choice == "1":
             start_game()
         elif choice == "2":
             player = save_load.load_game()
             if player:
-                cont = input("Continue your journey? (Y/N): ").strip().lower()
+                print(f"\nWelcome back, {player['Name']}!")
+                print(f"Current Day: {player['Day']}")
+                print(f"HP: {player['HP']}/{player['maxHP']}")
+                cont = input("\nContinue your journey? (Y/N): ").strip().lower()
                 if cont == "y":
                     start_game(player)
                 else:
@@ -30,10 +36,11 @@ def main():
         elif choice == "4":
             show_help()
         elif choice == "5":
-            print("\nGoodbye.\n")
+            print("\nThank you for playing!")
+            print("May your next journey be legendary.\n")
             break
         else:
-            print("\nInvalid input. Try again.\n")
+            print("\nInvalid input. Please choose 1-5.\n")
 
 
 def start_game(player=None):
@@ -41,77 +48,126 @@ def start_game(player=None):
         player = game_functions.create_player()
 
     while True:
-        print(f"\n=== DAY {player['Day']} ===")
+        print("\n" + "="*50)
+        print(f"           DAY {player['Day']}")
+        print("="*50)
         print(f"What will you do today, {player['Name']}?")
-        print("[1] Train")
-        print("[2] Rest")
-        print("[3] Explore")
-        print("[4] Shop")
-        print("[5] Save Game")
-        print("[6] View Status")
-        print("[7] End Game")
+        print("\n[1] Train      - Improve your stats")
+        print("[2] Rest       - Restore HP to full")
+        print("[3] Explore    - Fight monsters for gold")
+        print("[4] Shop       - Buy equipment and potions")
+        print("[5] Save Game  - Save your progress")
+        print("[6] Status     - View your stats")
+        print("[7] End Game   - Quit to main menu")
+        print("="*50)
 
-        choice = input("Choose an action: ")
+        choice = input("\nChoose an action: ").strip()
 
         if choice == "1":
             game_functions.train(player)
-            ask = input("Would you like to save your progress? (Y/N): ").strip().lower()
+            ask = input("\nSave your progress? (Y/N): ").strip().lower()
             if ask == "y":
                 save_load.save_game(player)
+                
         elif choice == "2":
             game_functions.rest(player)
-            ask = input("Would you like to save your progress? (Y/N): ").strip().lower()
+            ask = input("\nSave your progress? (Y/N): ").strip().lower()
             if ask == "y":
-                save_load.save_game(player)                
+                save_load.save_game(player)
+                
         elif choice == "3":
             game_functions.explore(player)
-            ask = input("Would you like to save your progress? (Y/N): ").strip().lower()
+            ask = input("\nSave your progress? (Y/N): ").strip().lower()
             if ask == "y":
                 save_load.save_game(player)
+                
         elif choice == "4":
             game_functions.shop(player)
-            ask = input("Would you like to save your progress? (Y/N): ").strip().lower()
+            ask = input("\nSave your progress? (Y/N): ").strip().lower()
             if ask == "y":
                 save_load.save_game(player)
+                
         elif choice == "5":
             save_load.save_game(player)
+            
         elif choice == "6":
             game_functions.show_stats(player)
+            
         elif choice == "7":
-            confirm = input("Are you sure you want to quit? (Y/N): ").strip().lower()
+            confirm = input("\nAre you sure you want to quit? (Y/N): ").strip().lower()
             if confirm == "y":
-                print("\nThank you for playing. Goodbye!\n")
+                print("\nThank you for playing. Your journey pauses here...\n")
                 break
             else:
                 print("\nContinuing your adventure...")
         else:
-            print("\nInvalid input. Try again.\n")
+            print("\nInvalid input. Please choose 1-7.\n")
     
-
-        if player["Day"] > 20:
-            print("\nYour 20 days are over. The final battle awaits...\n")
+        # FIXED: Check if Day 20 has arrived - trigger final boss
+        if player["Day"] == 20:
+            print("\n" + "="*50)
+            print("\n YOUR 20 DAYS ARE OVER")
+            print("     The final battle awaits...")
+            print("\n" + "="*50 + "\n")
+            input("Press Enter to face your fate...")
+            
             game_functions.final_battle(player)
-            print("\nThank you for playing 'Reincarnated as a Devourer'.")
-            print("Developed by Charles Gian L. Santos.\n")
+            
+            print("\n" + "="*50)
+            print("Thank you for playing")
+            print("'Reincarnated as a Devourer'")
+            print("\nDeveloped by Charles Gian L. Santos")
+            print("="*50 + "\n")
             break
 
-            
 
 def show_about():
-    print("\nReincarnated as a Devourer is a terminal-based RPG.")
-    print("You were reborn by a goddess with the Devour power.")
-    print("Train, explore, and prepare to face the Demon King in 20 days.\n")
-    input("(Press Enter to return to menu...)")
+    print("\n" + "="*50)
+    print("              ABOUT")
+    print("="*50)
+    print("\nGame Title: REINCARNATED AS A DEVOURER")
+    print("\nYou were reborn by a goddess into a strange world.")
+    print("Gifted with the power to Devour, you must grow")
+    print("stronger and face your destiny.")
+    print("\nTrain. Explore. Survive.")
+    print("In 20 days, you will face the Demon King.")
+    print("\nBut the truth behind your mission...")
+    print("...may not be what it seems.")
+    print("\n" + "-"*50)
+    print("Developer: Charles Gian L. Santos")
+    print("Lab Section: [Your Section Here]")  # FIXED: Added
+    print("Student Number: [Your Number Here]")  # FIXED: Added
+    print("CMSC 12 Project - Terminal-based RPG")
+    print("="*50)
+    input("\n(Press Enter to return to menu...)")
+
 
 def show_help():
-    print("\n=== HELP / TUTORIAL ===")
-    print("1. Train to increase your stats and grow stronger.")
-    print("2. Rest to fully restore your HP.")
-    print("3. Explore to fight monsters and earn Gold.")
-    print("4. Visit the Shop to buy potions and gear.")
-    print("5. Always save your progress using the Save option.")
-    print("6. Survive for 20 days, then face the Demon King.")
-    input("\n(Press Enter to return to the menu...)")
+    print("\n" + "="*50)
+    print("          HELP / TUTORIAL")
+    print("="*50)
+    print("\nOBJECTIVE:")
+    print("  Survive for 20 days and defeat the Demon King")
+    print("\nDAILY ACTIVITIES:")
+    print("  - Train    : Increase your stats (consumes 1 day)")
+    print("  - Rest     : Fully restore your HP (consumes 1 day)")
+    print("  - Explore  : Fight monsters, earn Gold (consumes 1 day)")
+    print("  - Shop     : Buy weapons, armor, potions (no time cost)")
+    print("  - Save     : Save your progress (no time cost)")
+    print("  - Status   : View your stats (no time cost)")
+    print("\nCOMBAT TIPS:")
+    print("  - Higher SPD = You attack first")
+    print("  - Defend adds your ATK to DEF for one turn")
+    print("  - Potions can save your life in tough battles")
+    print("  - You can flee, but it's only 50% successful")
+    print("\nSTRATEGY:")
+    print("  - Balance training with exploring for gold")
+    print("  - Buy equipment early to survive stronger monsters")
+    print("  - Save often! You can lose progress if defeated")
+    print("  - Pay attention to the story events...")
+    print("\n" + "="*50)
+    input("\n(Press Enter to return to menu...)")
+
 
 if __name__ == "__main__":
     main()
