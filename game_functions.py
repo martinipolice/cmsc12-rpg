@@ -53,25 +53,25 @@ def train(player):
 
     if choice == "1":
         old_hp = player["maxHP"]
-        gain = random.randint(5, 20)
+        gain = random.randint(4, 10)
         player["maxHP"] += gain
         slow_print(f"\nYou focused on endurance. maxHP increased from {old_hp} to {player['maxHP']} (+{gain})")
 
     elif choice == "2":
         old_atk = player["ATK"]
-        gain = random.randint(5, 20)
+        gain = random.randint(4, 10)
         player["ATK"] += gain
         slow_print(f"\nYou built your strength. ATK increased from {old_atk} to {player['ATK']} (+{gain})")
 
     elif choice == "3":
         old_def = player["DEF"]
-        gain = random.randint(5, 20)
+        gain = random.randint(4, 10)
         player["DEF"] += gain
         slow_print(f"\nYou hardened your defenses. DEF increased from {old_def} to {player['DEF']} (+{gain})")
 
     elif choice == "4":
         old_spd = player["SPD"]
-        gain = random.randint(5, 20)
+        gain = random.randint(4, 10)
         player["SPD"] += gain
         slow_print(f"\nYou refined your agility. SPD increased from {old_spd} to {player['SPD']} (+{gain})")
 
@@ -82,9 +82,9 @@ def train(player):
         old_def = player["DEF"]
         old_spd = player["SPD"]
 
-        atk_gain = random.randint(5, 15)
-        def_gain = random.randint(5, 15)
-        spd_gain = random.randint(5, 15)
+        atk_gain = random.randint(3, 7)
+        def_gain = random.randint(3, 7)
+        spd_gain = random.randint(3, 7)
 
         player["ATK"] += atk_gain
         player["DEF"] += def_gain
@@ -140,11 +140,11 @@ def explore(player):
 
     # Define monster stats
     if monster == "Dreadling":
-        m_stats = {"HP": 50, "ATK": 8, "DEF": 8, "SPD": 8, "Gold": 10}
+        m_stats = {"HP": 55, "ATK": 10, "DEF": 8, "SPD": 8, "Gold": 8}
     elif monster == "Vexclaw":
-        m_stats = {"HP": 100, "ATK": 20, "DEF": 20, "SPD": 20, "Gold": 50}
+        m_stats = {"HP": 120, "ATK": 22, "DEF": 18, "SPD": 18, "Gold": 35}
     else:
-        m_stats = {"HP": 200, "ATK": 50, "DEF": 50, "SPD": 50, "Gold": 500}
+        m_stats = {"HP": 220, "ATK": 45, "DEF": 40, "SPD": 30, "Gold": 180}
 
     slow_print(f"\nYou encountered a {monster}!")
 
@@ -172,17 +172,17 @@ def shop(player):
     print("Welcome to the merchant's stall!")
     print(f"Your Gold: {player['Gold']}G\n")
     print("--- WEAPONS ---")
-    print("[1] Dull Blade [+10 ATK] - 30G")
-    print("[2] Standard Greatsword [+25 ATK] - 60G")
-    print("[3] Mithril Warblade [+50 ATK] - 100G")
+    print("[1] Dull Blade [+10 ATK] - 40G")
+    print("[2] Standard Greatsword [+25 ATK] - 100G")
+    print("[3] Mithril Warblade [+40 ATK] - 180G")
     print("\n--- ARMOR ---")
-    print("[4] Wooden Guard [+10 DEF] - 30G")
-    print("[5] Steel Shield [+25 DEF] - 60G")
-    print("[6] Hero's Guard [+50 DEF] - 100G")
+    print("[4] Wooden Guard [+10 DEF] - 40G")
+    print("[5] Steel Shield [+25 DEF] - 100G")
+    print("[6] Aegis Guard [+40 DEF] - 180G")
     print("\n--- FOOTWEAR ---")
-    print("[7] Leather Treads [+10 SPD] - 30G")
-    print("[8] Padded Footguards [+25 SPD] - 60G")
-    print("[9] Hermes' Boots [+50 SPD] - 100G")
+    print("[7] Leather Treads [+10 SPD] - 40G")
+    print("[8] Padded Footguards [+25 SPD] - 100G")
+    print("[9] Swiftstride Boots [+40 SPD] - 180G")
     print("\n--- POTIONS ---")
     print("[10] Common Potion [+30 HP] - 15G")
     print("[11] High Potion [+100 HP] - 30G")
@@ -197,15 +197,15 @@ def shop(player):
         return
 
     items = {
-        "1": ("ATK", 10, 30, "Dull Blade"),
-        "2": ("ATK", 25, 60, "Standard Greatsword"),
-        "3": ("ATK", 50, 100, "Mithril Warblade"),
-        "4": ("DEF", 10, 30, "Wooden Guard"),
-        "5": ("DEF", 25, 60, "Steel Shield"),
-        "6": ("DEF", 50, 100, "Hero's Guard"),
-        "7": ("SPD", 10, 30, "Leather Treads"),
-        "8": ("SPD", 25, 60, "Padded Footguards"),
-        "9": ("SPD", 50, 100, "Hermes' Boots"),
+        "1": ("ATK", 10, 40, "Dull Blade"),
+        "2": ("ATK", 25, 100, "Standard Greatsword"),
+        "3": ("ATK", 40, 180, "Mithril Warblade"),
+        "4": ("DEF", 10, 40, "Wooden Guard"),
+        "5": ("DEF", 25, 100, "Steel Shield"),
+        "6": ("DEF", 40, 180, "Aegis Guard"),
+        "7": ("SPD", 10, 40, "Leather Treads"),
+        "8": ("SPD", 25, 100, "Padded Footguards"),
+        "9": ("SPD", 40, 180, "Swiftstride Boots"),
         "10": ("Potion", "Small", 15, "Common Potion"),
         "11": ("Potion", "Big", 30, "High Potion"),
         "12": ("Potion", "Panacea", 50, "Flask of Rejuvenation")
@@ -228,7 +228,7 @@ def shop(player):
             player["Potion"][value] += 1
             slow_print(f"\nYou bought a {item_name} for {cost}G!")
             print(f"You now have {player['Potion'][value]} {value} Potion(s).")
-            print(f"Remaining Gold: {player['Gold']}G")  # FIXED: Added
+            print(f"Remaining Gold: {player['Gold']}G")
         else:
             old = player[stat]
             player[stat] += value
@@ -248,10 +248,10 @@ def final_battle(player):
 
     # Demon King stats (base values)
     m_stats = {
-        "HP": 200,
-        "ATK": 75,
-        "DEF": 75,
-        "SPD": 75,
+        "HP": 240,
+        "ATK": 70,
+        "DEF": 55,
+        "SPD": 55,
         "Gold": 0
     }
 

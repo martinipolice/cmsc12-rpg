@@ -3,15 +3,6 @@ import time
 import sys
 
 def slow_print(text, delay=0.03, newline=True):
-    """
-    Print text with a character-by-character delay (like old Pokemon games).
-    Used for narrative/story text only.
-    
-    Args:
-        text: The text to print
-        delay: Delay between each character in seconds (default 0.03)
-        newline: Whether to add a newline at the end (default True)
-    """
     for char in text:
         sys.stdout.write(char)
         sys.stdout.flush()
