@@ -2,7 +2,7 @@
 import time
 import sys
 
-def slow_print(text, delay=0.03, newline=True):
+def slow_print(text, delay=0.05, newline=True):
     for char in text:
         sys.stdout.write(char)
         sys.stdout.flush()
@@ -10,15 +10,11 @@ def slow_print(text, delay=0.03, newline=True):
     if newline:
         print()
 
-def slow_print_lines(lines, delay=0.03, line_pause=0.5):
-    """
-    Print multiple lines with delay, pausing between lines.
-    
-    Args:
-        lines: List of text lines to print
-        delay: Delay between each character
-        line_pause: Pause between lines in seconds
-    """
-    for line in lines:
-        slow_print(line, delay=delay)
-        time.sleep(line_pause)
+def scene_header(title, subtitle=None):
+    bar = "="*50
+    print("\n" + bar)
+    print(f"  {title}" + (f"  |  {subtitle}" if subtitle else ""))
+    print(bar + "\n")
+
+def pause(prompt="\nPress Enter to continue..."):
+    input(prompt)

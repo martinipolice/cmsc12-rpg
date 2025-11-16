@@ -3,10 +3,12 @@ import random
 import battle
 import save_load
 import time
-from text_utils import slow_print
+from text_utils import slow_print, scene_header, pause
 
 def create_player():
-    name = input("Enter your name: ")
+
+    slow_print("\n'Hero from another world, tell me, what is your name?'")
+    name = input("\nEnter your name: ")
     player = {
         "Name": name,
         "HP": 20.0,
@@ -19,16 +21,17 @@ def create_player():
         "Day": 1
     }
     
-    slow_print(f"\nWelcome, {name}. You awaken in a strange new world.")
+    slow_print(f"\nWelcome, {name}. You awaken in a strange new world, Aincrad.")
     slow_print("The goddess whispers: 'Survive, grow, and face your fate.'\n")
+    pause()
     return player
 
 
 def show_stats(player):
     """Display the player's current stats."""
-    print("\n" + "="*40)
-    print(" "*14 + "STATUS")
-    print("="*40)
+    print("\n" + "="*50)
+    print("                      STATUS")
+    print("="*50)
     print(f"  Name: {player['Name']}")
     print(f"  HP: {player['HP']:.1f}/{player['maxHP']:.1f}")
     print(f"  ATK: {player['ATK']}  |  DEF: {player['DEF']}  |  SPD: {player['SPD']}")
@@ -37,18 +40,21 @@ def show_stats(player):
     print("\n  Potions:")
     for potion_type, count in player['Potion'].items():
         print(f"    - {potion_type}: {count}")
-    print("="*40 + "\n")
+    print("="*50)
+    pause()
 
 
 def train(player):
-    print("\nChoose a training type:")
+    print("\n" + "="*50)
+    print("                 TRAINING")
+    print("="*50)
     print("[1] Stamina Training  (Increase maxHP)")
     print("[2] Strength Training (Increase ATK)")
     print("[3] Resilience Training (Increase DEF)")
     print("[4] Dexterity Training (Increase SPD)")
     print("[5] Guts Training (Increase ATK, DEF, SPD)")
     print("[6] Cancel")
-
+    print("="*50)
     choice = input("Enter your choice: ").strip()
 
     if choice == "1":
@@ -94,6 +100,13 @@ def train(player):
         print(f"DEF: {old_def} -> {player['DEF']} (+{def_gain})")
         print(f"SPD: {old_spd} -> {player['SPD']} (+{spd_gain})")
 
+        setback = random.randint(10, 15)
+
+        player["maxHP"] = max(1, player["maxHP"] - setback)
+        if player["HP"] > player["maxHP"]:
+            player["HP"] = player["maxHP"]
+        slow_print(f"Guts took a toll. MaxHP -{setback}. Now {player['HP']:.1f}/{player['maxHP']:.1f}.")
+
     elif choice == "6":
         slow_print("\nYou skipped training for the day.")
         return
@@ -104,6 +117,7 @@ def train(player):
     
     slow_print(f"\nDay {player['Day']} has ended. You feel stronger than before.")
     player["Day"] += 1
+    pause()
     check_lore_event(player)
 
 
@@ -113,7 +127,7 @@ def rest(player):
     player["HP"] = player["maxHP"]
     player["Day"] += 1
     slow_print(f"Day {player['Day']} has ended. You feel refreshed.\n")
-
+    pause()
     check_lore_event(player)
 
 
@@ -153,22 +167,76 @@ def explore(player):
 
     if result == "win":
         slow_print(f"\nYou return victorious from the forest.")
+        maybe_devour(player, monster, m_stats)
     elif result == "lose":
         slow_print("\nYou wake up later... barely alive. The goddess's voice echoes faintly.")
         player["HP"] = player["maxHP"] / 2  # FIXED: Use float division
     elif result == "run":
         slow_print(f"\nYou escaped and returned safely to your camp.")
 
-    # FIXED: Always consume a day after exploring
+    # Consume a day for exploring
     player["Day"] += 1
     print(f"\nDay {player['Day']} has ended. You return safely from the forest.\n")
+    pause()
     check_lore_event(player)
 
 
+def maybe_devour(player, monster_name, m_stats):
+    # Disallow on bosses by flag or by name
+    if m_stats.get("Boss") or monster_name.lower() in ("demon king", "boss"):
+        return
+
+    # Per-day limiter
+    devours_today = player.setdefault("_DevoursToday", 0)
+    if devours_today >= 2:
+        slow_print("You feel sated. No more devouring today.")
+        return
+
+    remaining = max(0, 2 - devours_today)
+
+    rate = 0.12  # 12% siphon rate
+    atk_src = m_stats.get("ATK", 0)
+    def_src = m_stats.get("DEF", 0)
+    spd_src = m_stats.get("SPD", 0)
+
+    gain_atk = max(1, int(atk_src * rate)) if atk_src > 0 else 0
+    gain_def = max(1, int(def_src * rate)) if def_src > 0 else 0
+    gain_spd = max(1, int(spd_src * rate)) if spd_src > 0 else 0
+
+    total_gain = gain_atk + gain_def + gain_spd
+    if total_gain <= 0:
+        slow_print("There is nothing to devour.")
+        return
+
+    ans = input(
+        f"Devour the {monster_name} to gain +{gain_atk} ATK, +{gain_def} DEF, +{gain_spd} SPD "
+        f"at the cost of -{total_gain} MaxHP? (Devours left today: {2 - player['_DevoursToday']}) Y/N: "
+    ).strip().lower()
+    if ans != "y":
+        return
+
+    # Apply gains
+    player["ATK"] += gain_atk
+    player["DEF"] += gain_def
+    player["SPD"] += gain_spd
+
+    # MaxHP tradeoff and HP cap
+    old_max = player["maxHP"]
+    player["maxHP"] = max(1, player["maxHP"] - total_gain)
+    if player["HP"] > player["maxHP"]:
+        player["HP"] = player["maxHP"]
+
+    player["_DevoursToday"] = devours_today + 1
+
+    slow_print(f"You devour the essence of the {monster_name}!")
+    slow_print(f"+{gain_atk} ATK, +{gain_def} DEF, +{gain_spd} SPD at the cost of -{total_gain} MaxHP.")
+    slow_print(f"HP now {player['HP']:.1f}/{player['maxHP']:.1f} (was MaxHP {old_max:.1f}).")
+
+
 def shop(player):
-    print("\n" + "="*40)
-    print(" "*16 + "SHOP")
-    print("="*40)
+    print("\n" + "="*50)
+    print("                      SHOP")
+    print("="*50)
     print("Welcome to the merchant's stall!")
     print(f"Your Gold: {player['Gold']}G\n")
     print("--- WEAPONS ---")
@@ -188,12 +256,13 @@ def shop(player):
     print("[11] High Potion [+100 HP] - 30G")
     print("[12] Flask of Rejuvenation [Full Heal] - 50G")
     print("\n[13] Exit Shop")
-    print("="*40)
+    print("="*50)
 
     choice = input("\nChoose an item to buy: ").strip()
 
     if choice == "13":
         print("You left the shop.")
+        pause()
         return
 
     items = {
@@ -229,19 +298,21 @@ def shop(player):
             slow_print(f"\nYou bought a {item_name} for {cost}G!")
             print(f"You now have {player['Potion'][value]} {value} Potion(s).")
             print(f"Remaining Gold: {player['Gold']}G")
+            pause()
         else:
             old = player[stat]
             player[stat] += value
             slow_print(f"\nYou bought {item_name} for {cost}G!")
             print(f"{stat} increased: {old} -> {player[stat]} (+{value})")
             print(f"Remaining Gold: {player['Gold']}G")
+            pause()
     else:
         print("\nInvalid choice.")
 
 
 def final_battle(player):
     print("\n" + "="*50)
-    print("         THE FINAL BATTLE")
+    print("           THE FINAL BATTLE")
     print("="*50)
     slow_print("\nThe sky darkens... The Demon King descends before you!")
     
@@ -358,7 +429,7 @@ def final_battle(player):
         turn_count += 1
 
     print("\n" + "="*50)
-    print("=== GAME OVER ===")
+    print("       === GAME OVER ===")
     print("="*50)
 
 
@@ -465,6 +536,7 @@ def victory_sequence(player):
     slow_print("The world feels... empty.")
 
     player["Day"] = 21
+    pause()
     check_lore_event(player)
 
 
@@ -489,20 +561,23 @@ def defeat_sequence():
     slow_print("The goddess weeps in silence.")
     time.sleep(0.8)
     slow_print("\nThe cycle remains unbroken.")
+    pause()
 
 
 def check_lore_event(player):
     day = player["Day"]
 
     if day == 1:
-        slow_print("\nYou wake up in a forest. The air feels heavy and still.", delay=0.04)
+        slow_print("\nYou wake up in a forest surrounded by faint whispers.", delay=0.04)
         time.sleep(0.8)
-        slow_print("A faint voice echoes: 'This world is your new beginning.'", delay=0.04)
+        slow_print("Your body feels weak... confused... yet something stirs inside.", delay=0.04)
+        pause()
 
     elif day == 5:
         slow_print("\nYou dream of the goddess watching from afar.", delay=0.04)
         time.sleep(0.8)
-        slow_print("Goddess: 'Do not fear this world. It was made for you.'", delay=0.04)
+        slow_print("Goddess: 'Do not fear this world. This is just the beginning'", delay=0.04)
+        pause()
 
     elif day == 10:
         slow_print("\nA vision fills your mind.", delay=0.04)
@@ -510,11 +585,13 @@ def check_lore_event(player):
         slow_print("You see the goddess beside a shadow under a red sky.", delay=0.04)
         time.sleep(0.8)
         slow_print("Her voice trembles: 'Forgive me.'", delay=0.04)
+        pause()
 
     elif day == 11:
-        slow_print("\nThe dreams feel too real to ignore.", delay=0.04)
+        slow_print("\nThe dreams feel real. You sense sadness in her voice.", delay=0.04)
         time.sleep(0.8)
         slow_print("You begin to wonder who the man beside her was.", delay=0.04)
+        pause()
 
     elif day == 15:
         slow_print("\nYou find ancient ruins deep within the forest.", delay=0.04)
@@ -523,28 +600,63 @@ def check_lore_event(player):
         time.sleep(0.8)
         slow_print("Ghostly Voice: 'They once loved each other. Love turned to ruin.'", delay=0.04)
         time.sleep(0.8)
+        time.sleep(0.8)
         slow_print("Goddess: 'Do not question fate. Finish what was started.'", delay=0.04)
+        pause()
 
     elif day == 16:
         slow_print("\nThe goddess no longer answers.", delay=0.04)
         time.sleep(0.8)
         slow_print("The monsters whisper your name as you fight.", delay=0.04)
+        pause()
 
     elif day == 19:
         slow_print("\nYou dream once more. The goddess appears, fading fast.", delay=0.04)
         time.sleep(0.8)
-        slow_print("Goddess: 'He waits for me still... End it, please.'", delay=0.04)
+        slow_print("Goddess: 'He waits for me still... End his suffering, please.'", delay=0.04)
+        pause()
 
     elif day == 20:
         slow_print("\nYou reach a ruined temple. Darkness thickens around you.", delay=0.04)
         time.sleep(0.8)
-        slow_print("A tall figure steps forward.", delay=0.04)
+        slow_print("An ominous figure steps forward.", delay=0.04)
         time.sleep(0.8)
         slow_print("Demon King: 'You carry her scent... and her sorrow.'", delay=0.04)
         time.sleep(0.8)
-        slow_print("You: 'She sent me to end you.'", delay=0.04)
         time.sleep(0.8)
-        slow_print("Demon King: 'Then she still cannot let go.'", delay=0.04)
+
+        print("\nHow do you respond?")
+        print("[1] 'She sent me to end you.'")
+        print("[2] 'I'm here of my own will.'")
+        print("[3] 'I won't kill you.'")
+        print("[4] Remain silent")
+
+        reply = input("Choose your reply: ").strip()
+
+        if reply == "1":
+            slow_print("\nYou: 'She sent me to end you.'", delay=0.04)
+            time.sleep(0.8)
+            slow_print("Demon King: 'A painful truth... then do what must be done.'", delay=0.04)
+            pause()
+        
+        elif reply == "2":
+            slow_print("\nYou: 'I'm here of my own will.'", delay=0.04)
+            time.sleep(0.8)
+            slow_print("Demon King: 'I respect your bravery... a rare thing. Interesting.'", delay=0.04)
+            pause()
+          
+        elif reply == "3":
+            slow_print("\nYou: 'I won't kill you.'", delay=0.04)
+            time.sleep(0.8)
+            slow_print("Demon King: 'Mercy... perhaps your goddess taught you well.'", delay=0.04)
+            pause()
+           
+        else:
+            slow_print("\nYou remain silent. The ruins echo your hesitation.", delay=0.04)
+            pause()
+
+
+        time.sleep(0.8)
 
     elif day == 21:
         print("\n" + "="*50)
@@ -553,31 +665,27 @@ def check_lore_event(player):
         time.sleep(2)
         slow_print("", delay=0.05)
         time.sleep(1)
-        slow_print("*Beep... Beep...*", delay=0.05)
+        slow_print("*Beep... Beep... Beep...*", delay=0.05)
         time.sleep(1.5)
         slow_print("", delay=0.05)
         time.sleep(1)
         slow_print("You open your eyes in a hospital room.", delay=0.05)
         time.sleep(2)
-        slow_print("Sterile walls. The smell of antiseptic.", delay=0.05)
         time.sleep(2)
         slow_print("", delay=0.05)
         time.sleep(1)
-        slow_print("Through the window, a young couple walks by.", delay=0.05)
+        slow_print("Through the window, a you see a couple walks by.", delay=0.05)
         time.sleep(2.5)
         slow_print("Their faces... they resemble the goddess and the Demon King.", delay=0.05)
         time.sleep(2.5)
         slow_print("", delay=0.05)
         time.sleep(1)
-        slow_print("You whisper: 'Another world?'", delay=0.05)
+        slow_print("You whisper: 'In another world, huh?'", delay=0.05)
         time.sleep(2)
         slow_print("", delay=0.05)
         time.sleep(1)
-        slow_print("The door opens. A nurse smiles at you.", delay=0.05)
-        time.sleep(2)
-        slow_print("'Welcome back. You've been asleep for 20 days.'", delay=0.05)
-        time.sleep(2.5)
-        slow_print("", delay=0.05)
+        slow_print("The door opens...", delay=0.05)
         time.sleep(2)
         print("="*50)
         time.sleep(1)
+        pause()
